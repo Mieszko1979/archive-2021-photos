@@ -1,26 +1,18 @@
 name: Process and Resize Photos
 on:
   push:
-    paths:
-      - '**.jpg'
-      - '**.jpeg'
+    paths: ['**.jpg', '**.jpeg']
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python_version: '3.9'
-      - name: Install dependencies
-        run: pip install Pillow
-      - name: Run script
-        run: python process_photos.py
-      - name: Commit changes
-        run: |
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python_version: '3.9'}
+      - run: pip install Pillow
+      - run: python process_photos.py
+      - run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
