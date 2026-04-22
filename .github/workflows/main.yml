@@ -1,23 +1,46 @@
 name: Process and Resize Photos
+
 on:
   push:
-    paths: ['**.jpg', '**.jpeg']
+    paths:
+      - '**.jpg'
+      - '**.jpeg'
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python_version: '3.9'}
-      - run: pip install Pillow
-      - run: python process_photos.py
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Нужно для корректного слияния изменений
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python_version: '3.9'
+
+      - name: Install dependencies
+        run: pip install Pillow
+
+      - name: Run script
+        run: python process_photos.py
+
       - name: Commit and Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          
+          # 1. Сначала подготавливаем все изменения робота
           git add .
-          # Пытаемся забрать изменения от пользователя, если они были
+          
+          # 2. Фиксируем их локально (если изменений нет, идем дальше)
+          git commit -m "Optimize photos and update GPS data" || echo "No changes to commit"
+          
+          # 3. Теперь забираем ваши ручные изменения (например, удаления файлов)
+          # Используем rebase, чтобы поставить изменения робота поверх ваших
           git pull --rebase origin main
-          git commit -m "Update photo data" || exit 0
-          git push
+          
+          # 4. Отправляем всё в интернет
+          git push origin main
