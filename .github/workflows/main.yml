@@ -12,9 +12,12 @@ jobs:
         with: {python_version: '3.9'}
       - run: pip install Pillow
       - run: python process_photos.py
-      - run: |
+      - name: Commit and Push
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "Optimize photos" || exit 0
+          # Пытаемся забрать изменения от пользователя, если они были
+          git pull --rebase origin main
+          git commit -m "Update photo data" || exit 0
           git push
