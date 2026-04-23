@@ -32,7 +32,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          # Если изменений нет, эта команда просто напишет "No changes" и не выдаст ошибку
-          git commit -m "Auto-update photos and coordinates" || echo "No changes to commit"
+          git commit -m "Refresh photos.json and optimize images" || echo "No changes to commit"
           git pull --rebase origin main
           git push origin main
