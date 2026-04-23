@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Нужно для корректного слияния изменений
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,16 +31,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
-          # 1. Сначала подготавливаем все изменения робота
           git add .
-          
-          # 2. Фиксируем их локально (если изменений нет, идем дальше)
-          git commit -m "Optimize photos and update GPS data" || echo "No changes to commit"
-          
-          # 3. Теперь забираем ваши ручные изменения (например, удаления файлов)
-          # Используем rebase, чтобы поставить изменения робота поверх ваших
+          # Если изменений нет, эта команда просто напишет "No changes" и не выдаст ошибку
+          git commit -m "Auto-update photos and coordinates" || echo "No changes to commit"
           git pull --rebase origin main
-          
-          # 4. Отправляем всё в интернет
           git push origin main
